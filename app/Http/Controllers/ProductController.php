@@ -68,7 +68,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('product.show',compact('product'));
     }
 
     /**
@@ -79,7 +79,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view('product.edit',compact('product'));
     }
 
     /**
@@ -91,7 +91,32 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+
+        $this->validate($request, [
+            'name'                  => 'required|min:3|max:191',
+            'price'                 => 'required|numeric',
+            'description'           => 'required',
+            'picture'               => 'sometimes|required|mimes:jpeg,png,gif,jpg',
+        ]);
+
+
+        // upload the photo
+        $productName = $product->picture;
+
+        if ($request->picture != "") {
+            $productName = time().'.'.$request->picture->getClientOriginalExtension();
+            $request->picture->move(public_path('store-pictures'), $productName);
+        }
+
+        // save to database
+       $product->update([
+            'name'  => $request->name,
+            'price'  => $request->price,
+            'description'  => $request->description,
+            'picture'  => $productName
+        ]);
+
+       return back()->with('status', 'Product Created');
     }
 
     /**

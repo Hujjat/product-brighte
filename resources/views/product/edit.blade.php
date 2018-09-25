@@ -4,16 +4,22 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
                 <div class="card">
                     <div class="card-header">New Product  </div>
                     <div class="card-body">
 
-                        {!! Form::model($product, ['route' => ['user.update', $product->id], 'files' => true]) !!}
+                        {!! Form::model($product, ['method' =>'PATCH', 'route' => ['product.update', $product->id], 'files' => true]) !!}
 
-                            {{-- @include('product.form') --}}
-
-                            <div class="btn-group pull-right">
-                                {!! Form::reset("Reset", ['class' => 'btn btn-warning']) !!}
+                            @include('product.form')
+                            <p>
+                                <img src="{{asset('store-pictures')}}/{{$product->picture}}" width="100">
+                            </p>
+                            <div class="pull-right">
                                 {!! Form::submit("Update", ['class' => 'btn btn-primary']) !!}
                             </div>
 

@@ -29,18 +29,21 @@
                                 @foreach ($products as $product)
                                     <tr>
                                         <td>
-                                        <img src="{{asset('store-pictures').'/'.$product->picture}} " alt="Product Photo" width="40">
+                                        <a href="{{route('product.show',$product->id)}}">
+                                                <img src="{{asset('store-pictures').'/'.$product->picture}} " alt="Product Photo" width="40">
+                                        </a>
                                         </td>
                                         <td> {{$product->name}} </td>
                                         <td> ${{$product->price}} </td>
                                         <td>
-                                            <a href="#edit">Edit</a> |
+                                            <a href="{{route('product.edit', $product->id)}}">Edit</a> |
 
-                                                <form class="form-inline d-inline" onsubmit="return confirm('Do you really want to delete?');"               action="{{ route('product.destroy',[$product->id]) }}"             method="POST" >
-                                                        {{ csrf_field() }}
-                                                        <input type="hidden" name="_method" value="DELETE" />
-                                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                                </form>
+                                            <form class="form-inline d-inline"
+                                                onsubmit="return confirm('Do you really want to delete?');"               action="{{ route('product.destroy',[$product->id]) }}"             method="POST" >
+                                                    {{ csrf_field() }}
+                                                <input type="hidden" name="_method" value="DELETE" />
+                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
