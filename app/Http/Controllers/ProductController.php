@@ -14,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::latest()->paginate(10);
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -24,7 +25,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('product.create');
     }
 
     /**
@@ -35,7 +36,28 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate
+        $this->validate($request, [
+            'name'                  => 'required|min:3|max:191',
+            'price'                 => 'required|numeric',
+            'description'           => 'required',
+            'picture'               => 'required|mimes:jpeg,png,gif,jpg',
+        ]);
+
+        // upload the photo
+        $productName = time().'.'.$request->picture->getClientOriginalExtension();
+        $request->picture->move(public_path('store-pictures'), $productName);
+
+
+        // save to database
+        Product::create([
+            'name'  => $request->name,
+            'price'  => $request->price,
+            'description'  => $request->description,
+            'picture'  => $productName
+        ]);
+
+         return redirect('product')->with('status', 'Product Created');
     }
 
     /**
@@ -80,6 +102,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect('product')->with('status', 'Product Delete');
     }
 }
